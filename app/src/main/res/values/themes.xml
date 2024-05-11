@@ -11,8 +11,8 @@
     </style>
 
     <style name="ShapeAppearanceOverlay.NoRoundedCorners" parent="">
-        <item name="cornerFamily">cut</item>
-        <item name="cornerSize">0dp</item>
+<!--        <item name="cornerFamily">cut</item>-->
+<!--        <item name="cornerSize">0dp</item>-->
     </style>
 
     <style name="cardViewStyle" parent="Widget.Material3.CardView.Outlined">
@@ -21,7 +21,7 @@
 
     <style name="CutShape" parent="ShapeAppearance.Material3.MediumComponent">
         <item name="cornerFamily">cut</item>
-        <item name="cornerSize">12dp</item>
+        <item name="cornerSize">0dp</item>
 
     </style>
 

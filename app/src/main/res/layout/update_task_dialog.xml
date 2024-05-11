@@ -3,8 +3,6 @@
     style="@style/cardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="10dp"
-    android:layout_marginVertical="20dp"
     app:cardBackgroundColor="@color/mainGreen">
 
     <RelativeLayout
@@ -44,12 +42,13 @@
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/edTaskTitle"
+                android:id="@+id/edTaskTitleL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter the Task Title">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edTaskTitle"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     android:inputType="text" />
@@ -57,12 +56,13 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/edTaskDesc"
+                android:id="@+id/edTaskDescL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter the Task Description">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edTaskDesc"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     android:gravity="top|start"
@@ -73,7 +73,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:id="@+id/UpdateTaskBtn"
+                android:id="@+id/updateTaskBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="?actionBarSize"
                 android:layout_gravity="center"
