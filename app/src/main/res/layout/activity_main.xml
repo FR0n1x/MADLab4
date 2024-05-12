@@ -79,6 +79,7 @@
             android:layout_gravity="center"
             android:layout_marginVertical="20dp"
             android:textSize="20sp"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sort Tasks by Date in Ascending Order."

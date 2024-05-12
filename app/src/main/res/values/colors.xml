@@ -5,7 +5,5 @@
     <color name="mainGreen">#7b8b5a</color>
     <color name="darkerGreen">#4d5738</color>
     <color name="SubGreen">#738c52</color>
-    <color name="your_thumb_color">#FF0000</color> <!-- Red color -->
-    <color name="your_track_color">#00FF00</color> <!-- Green color -->
 
 </resources>
