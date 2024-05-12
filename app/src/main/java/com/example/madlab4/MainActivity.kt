@@ -211,10 +211,10 @@ class MainActivity : AppCompatActivity() {
                         updateTaskDialog.dismiss()
                         loadingDialog.show()
                         taskViewModel
-//                            .updateTask(updateTask)
-                            .updateTaskParticularField(task.id,
-                                updateETTitle.text.toString().trim(),
-                                updateETdesc.text.toString().trim(),)
+                            .updateTask(updateTask)
+//                            .updateTaskParticularField(task.id,
+//                                updateETTitle.text.toString().trim(),
+//                                updateETdesc.text.toString().trim(),)
                             .observe(this) {
                                 when (it.status) {
                                     Status.LOADING -> {
