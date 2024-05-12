@@ -4,4 +4,6 @@
     <string name="today_s_tasks">Upcoming Tasks</string>
     <string name="new_task">New Task</string>
     <string name="enter_search_title">Search Title</string>
+    <string name="update_task">Update Task</string>
+    <string name="save_task">Save Task</string>
 </resources>

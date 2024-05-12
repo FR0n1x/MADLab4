@@ -40,9 +40,8 @@ fun validateEditText(editText: TextInputEditText, textTextInputLayout: TextInput
     }
 }
 
-fun clearEditText(editText: TextInputEditText, textTextInputLayout: TextInputLayout) {
+fun clearEditText(editText: EditText, textTextInputLayout: TextInputLayout) {
     editText.text = null
     textTextInputLayout.error = null
-
 }
 

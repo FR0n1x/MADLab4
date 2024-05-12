@@ -96,8 +96,10 @@ class MainActivity : AppCompatActivity() {
 
         val saveTaskButton = addTaskDialog.findViewById<Button>(R.id.saveTaskBtn)
         saveTaskButton.setOnClickListener {
-            if (validateEditText(addETTitle, addETTitleL)
-                && validateEditText(addETDesc, addETDescL)
+            if (validateEditText(addETTitle, addETTitleL) && validateEditText(
+                    addETDesc,
+                    addETDescL
+                )
             ) {
                 addTaskDialog.dismiss()
                 val newTask = Task(
@@ -157,10 +159,6 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        mainBinding.addTaskFAbtn.setOnClickListener {
-            addTaskDialog.show()
-        }
-
         val updateCLoseImg = updateTaskDialog.findViewById<ImageView>(R.id.closeImg)
         updateCLoseImg.setOnClickListener { (updateTaskDialog.dismiss()) }
 
@@ -171,9 +169,7 @@ class MainActivity : AppCompatActivity() {
 
         val taskRecyclerViewAdapter = TaskRVVBListAdapter { type, position, task ->
             if (type == "delete") {
-                taskViewModel
-                    .deleteTask(task.id)
-                    .observe(this) {
+                taskViewModel.deleteTask(task.id).observe(this) {
                         when (it.status) {
                             Status.LOADING -> {
                                 loadingDialog.show()
@@ -198,8 +194,10 @@ class MainActivity : AppCompatActivity() {
                 updateETTitle.setText(task.title)
                 updateETdesc.setText(task.description)
                 updateTaskButton.setOnClickListener {
-                    if (validateEditText(updateETTitle, updateETTitleL)
-                        && validateEditText(updateETdesc, updateETdescL)
+                    if (validateEditText(updateETTitle, updateETTitleL) && validateEditText(
+                            updateETdesc,
+                            updateETdescL
+                        )
                     ) {
                         val updateTask = Task(
                             task.id,
@@ -210,8 +208,7 @@ class MainActivity : AppCompatActivity() {
                         )
                         updateTaskDialog.dismiss()
                         loadingDialog.show()
-                        taskViewModel
-                            .updateTask(updateTask)
+                        taskViewModel.updateTask(updateTask)
 //                            .updateTaskParticularField(task.id,
 //                                updateETTitle.text.toString().trim(),
 //                                updateETdesc.text.toString().trim(),)
