@@ -4,17 +4,18 @@
     <value>
       <entry key="app">
         <State>
-          <runningDeviceTargetsSelectedWithDialog>
+          <runningDeviceTargetSelectedWithDropDown>
             <Target>
               <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
                 <Key>
                   <type value="SERIAL_NUMBER" />
-                  <value value="adb-R58NA14LXVV-6QmUf1._adb-tls-connect._tcp" />
+                  <value value="adb-36fbbd6c-pHM9c8._adb-tls-connect._tcp" />
                 </Key>
               </deviceKey>
             </Target>
-          </runningDeviceTargetsSelectedWithDialog>
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-05-11T12:47:39.556583100Z" />
         </State>
       </entry>
     </value>

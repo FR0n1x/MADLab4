@@ -9,13 +9,23 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
+import com.example.madlab4.adapters.TaskRVVBListAdapter
 import com.example.madlab4.databinding.ActivityMainBinding
+import com.example.madlab4.models.Task
+import com.example.madlab4.utils.Status
+import com.example.madlab4.utils.clearEditText
+import com.example.madlab4.utils.longToastShow
 import com.example.madlab4.utils.setupDialog
 import com.example.madlab4.utils.validateEditText
+import com.example.madlab4.viewmodels.TaskViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.Date
+import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,10 +49,44 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val taskViewModel: TaskViewModel by lazy {
+        ViewModelProvider(this)[TaskViewModel::class.java]
+    }
+
+    private val taskRecyclerViewAdapter: TaskRVVBListAdapter by lazy {
+        TaskRVVBListAdapter{ position, task ->
+            taskViewModel
+                .deleteTask(task.id)
+                .observe(this){
+                    when (it.status) {
+                        Status.LOADING -> {
+                            loadingDialog.show()
+                        }
+
+                        Status.SUCCESS -> {
+                            loadingDialog.dismiss()
+                            if (it.data?.toInt() != -1) {
+                                longToastShow("Task Deleted Successfully")
+                            }
+                        }
+
+                        Status.ERROR -> {
+                            loadingDialog.dismiss()
+                            it.message?.let { it1 -> longToastShow(it1) }
+
+                        }
+                    }
+
+                }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(mainBinding.root)
+
+        mainBinding.taskRV.adapter = taskRecyclerViewAdapter
 
 //        Add task start
         val addCLoseImg = addTaskDialog.findViewById<ImageView>(R.id.closeImg)
@@ -73,6 +117,8 @@ class MainActivity : AppCompatActivity() {
         })
 
         mainBinding.addTaskFAbtn.setOnClickListener {
+            clearEditText(addETTitle, addETTitleL)
+            clearEditText(addETDesc, addETDescL)
             addTaskDialog.show()
         }
 
@@ -82,13 +128,38 @@ class MainActivity : AppCompatActivity() {
                 && validateEditText(addETDesc, addETDescL)
             ) {
                 addTaskDialog.dismiss()
-                Toast.makeText(this, "Validated!", Toast.LENGTH_SHORT).show()
-                loadingDialog.show()
+                val newTask = Task(
+                    UUID.randomUUID().toString(),
+                    addETTitle.text.toString().trim(),
+                    addETDesc.text.toString().trim(),
+                    Date()
+                )
+                taskViewModel.insertTask(newTask).observe(this) {
+                    when (it.status) {
+                        Status.LOADING -> {
+                            loadingDialog.show()
+                        }
+
+                        Status.SUCCESS -> {
+                            loadingDialog.dismiss()
+                            if (it.data?.toInt() != -1) {
+                                longToastShow("Task Added Successfully")
+                            }
+                        }
+
+                        Status.ERROR -> {
+                            loadingDialog.dismiss()
+                            it.message?.let { it1 -> longToastShow(it1) }
+
+                        }
+                    }
+                }
             }
         }
 
         //        Add task end
 
+//        update start
 
         val updateETTitle = updateTaskDialog.findViewById<TextInputEditText>(R.id.edTaskTitle)
         val updateETTitleL = updateTaskDialog.findViewById<TextInputLayout>(R.id.edTaskTitleL)
@@ -133,6 +204,38 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+//        update end
 
+        callGetTaskList()
+
+    }
+
+    private fun callGetTaskList() {
+        CoroutineScope(Dispatchers.Main).launch {
+            taskViewModel.viewTaskList().collect {
+                when (it.status) {
+                    Status.LOADING -> {
+                        loadingDialog.show()
+                    }
+
+                    Status.SUCCESS -> {
+//                        loadingDialog.dismiss()
+//                        it.data?.collect { taskList ->
+//                            taskRecyclerViewAdapter.submitList(taskList)
+//                        }
+                        it.data?.collect { taskList->
+                            loadingDialog.dismiss()
+                            taskRecyclerViewAdapter.addAllTask(taskList)
+                        }
+
+                    }
+
+                    Status.ERROR -> {
+                        loadingDialog.dismiss()
+                        it.message?.let { it1 -> longToastShow(it1) }
+                    }
+                }
+            }
+        }
     }
 }
