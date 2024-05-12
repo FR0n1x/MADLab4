@@ -11,6 +11,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     private val taskRepository = TaskRepository(application)
 
     fun viewTaskList() = taskRepository.getTaskList()
+    fun viewTaskListAsc() = taskRepository.getTaskListAsc()
     fun insertTask(task: Task): MutableLiveData<Resource<Long>> {
         return taskRepository.insertTask(task)
     }

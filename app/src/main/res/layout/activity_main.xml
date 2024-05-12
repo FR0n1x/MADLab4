@@ -71,7 +71,14 @@
                     android:textColorHint="@color/mainGreen" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
+
+        <Switch
+            android:id="@+id/switch_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sort Tasks by Date in Ascending Order." />
 
 
         <androidx.recyclerview.widget.RecyclerView

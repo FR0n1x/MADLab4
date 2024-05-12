@@ -19,7 +19,20 @@ class TaskRepository(application: Application) {
     fun getTaskList() = flow {
         emit(Loading())
         try {
+            kotlinx.coroutines.delay(500)
             val result = taskDao.getTaskList()
+            emit(Success(result))
+        } catch (e: Exception) {
+            emit(Error(e.message.toString()))
+        }
+
+    }
+
+    fun getTaskListAsc() = flow {
+        emit(Loading())
+        try {
+            kotlinx.coroutines.delay(500)
+            val result = taskDao.getTaskListAsc()
             emit(Success(result))
         } catch (e: Exception) {
             emit(Error(e.message.toString()))

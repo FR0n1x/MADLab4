@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Switch
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -170,26 +171,26 @@ class MainActivity : AppCompatActivity() {
         val taskRecyclerViewAdapter = TaskRVVBListAdapter { type, position, task ->
             if (type == "delete") {
                 taskViewModel.deleteTask(task.id).observe(this) {
-                        when (it.status) {
-                            Status.LOADING -> {
-                                loadingDialog.show()
-                            }
+                    when (it.status) {
+                        Status.LOADING -> {
+                            loadingDialog.show()
+                        }
 
-                            Status.SUCCESS -> {
-                                loadingDialog.dismiss()
-                                if (it.data?.toInt() != -1) {
-                                    longToastShow("Task Deleted Successfully")
-                                }
-                            }
-
-                            Status.ERROR -> {
-                                loadingDialog.dismiss()
-                                it.message?.let { it1 -> longToastShow(it1) }
-
+                        Status.SUCCESS -> {
+                            loadingDialog.dismiss()
+                            if (it.data?.toInt() != -1) {
+                                longToastShow("Task Deleted Successfully")
                             }
                         }
 
+                        Status.ERROR -> {
+                            loadingDialog.dismiss()
+                            it.message?.let { it1 -> longToastShow(it1) }
+
+                        }
                     }
+
+                }
             } else if (type == "update") {
                 updateETTitle.setText(task.title)
                 updateETdesc.setText(task.description)
@@ -241,14 +242,54 @@ class MainActivity : AppCompatActivity() {
 
 
         mainBinding.taskRV.adapter = taskRecyclerViewAdapter
-
         callGetTaskList(taskRecyclerViewAdapter)
+
+
+
+        val switchButton = findViewById<Switch>(R.id.switch_button)
+        switchButton.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                callGetTaskListAsc(taskRecyclerViewAdapter)
+            }else{
+                callGetTaskList(taskRecyclerViewAdapter)
+
+            }
+        }
 
     }
 
     private fun callGetTaskList(taskRecyclerViewAdapter: TaskRVVBListAdapter) {
         CoroutineScope(Dispatchers.Main).launch {
             taskViewModel.viewTaskList().collect {
+                when (it.status) {
+                    Status.LOADING -> {
+                        loadingDialog.show()
+                    }
+
+                    Status.SUCCESS -> {
+//                        loadingDialog.dismiss()
+//                        it.data?.collect { taskList ->
+//                            taskRecyclerViewAdapter.submitList(taskList)
+//                        }
+                        it.data?.collect { taskList ->
+                            loadingDialog.dismiss()
+                            taskRecyclerViewAdapter.addAllTask(taskList)
+                        }
+
+                    }
+
+                    Status.ERROR -> {
+                        loadingDialog.dismiss()
+                        it.message?.let { it1 -> longToastShow(it1) }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun callGetTaskListAsc(taskRecyclerViewAdapter: TaskRVVBListAdapter) {
+        CoroutineScope(Dispatchers.Main).launch {
+            taskViewModel.viewTaskListAsc().collect {
                 when (it.status) {
                     Status.LOADING -> {
                         loadingDialog.show()
