@@ -53,40 +53,12 @@ class MainActivity : AppCompatActivity() {
         ViewModelProvider(this)[TaskViewModel::class.java]
     }
 
-    private val taskRecyclerViewAdapter: TaskRVVBListAdapter by lazy {
-        TaskRVVBListAdapter{ position, task ->
-            taskViewModel
-                .deleteTask(task.id)
-                .observe(this){
-                    when (it.status) {
-                        Status.LOADING -> {
-                            loadingDialog.show()
-                        }
-
-                        Status.SUCCESS -> {
-                            loadingDialog.dismiss()
-                            if (it.data?.toInt() != -1) {
-                                longToastShow("Task Deleted Successfully")
-                            }
-                        }
-
-                        Status.ERROR -> {
-                            loadingDialog.dismiss()
-                            it.message?.let { it1 -> longToastShow(it1) }
-
-                        }
-                    }
-
-                }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(mainBinding.root)
 
-        mainBinding.taskRV.adapter = taskRecyclerViewAdapter
 
 //        Add task start
         val addCLoseImg = addTaskDialog.findViewById<ImageView>(R.id.closeImg)
@@ -193,24 +165,91 @@ class MainActivity : AppCompatActivity() {
         updateCLoseImg.setOnClickListener { (updateTaskDialog.dismiss()) }
 
         val updateTaskButton = updateTaskDialog.findViewById<Button>(R.id.updateTaskBtn)
-        updateTaskButton.setOnClickListener {
-            if (validateEditText(updateETTitle, updateETTitleL) && validateEditText(
-                    updateETdesc, updateETdescL
-                )
-            ) {
-                updateTaskDialog.dismiss()
-                Toast.makeText(this, "Validated!", Toast.LENGTH_SHORT).show()
-                loadingDialog.show()
-            }
-        }
+
 
 //        update end
 
-        callGetTaskList()
+        val taskRecyclerViewAdapter = TaskRVVBListAdapter { type, position, task ->
+            if (type == "delete") {
+                taskViewModel
+                    .deleteTask(task.id)
+                    .observe(this) {
+                        when (it.status) {
+                            Status.LOADING -> {
+                                loadingDialog.show()
+                            }
+
+                            Status.SUCCESS -> {
+                                loadingDialog.dismiss()
+                                if (it.data?.toInt() != -1) {
+                                    longToastShow("Task Deleted Successfully")
+                                }
+                            }
+
+                            Status.ERROR -> {
+                                loadingDialog.dismiss()
+                                it.message?.let { it1 -> longToastShow(it1) }
+
+                            }
+                        }
+
+                    }
+            } else if (type == "update") {
+                updateETTitle.setText(task.title)
+                updateETdesc.setText(task.description)
+                updateTaskButton.setOnClickListener {
+                    if (validateEditText(updateETTitle, updateETTitleL)
+                        && validateEditText(updateETdesc, updateETdescL)
+                    ) {
+                        val updateTask = Task(
+                            task.id,
+                            updateETTitle.text.toString().trim(),
+                            updateETdesc.text.toString().trim(),
+//                           here i Date updated
+                            Date()
+                        )
+                        updateTaskDialog.dismiss()
+                        loadingDialog.show()
+                        taskViewModel
+//                            .updateTask(updateTask)
+                            .updateTaskParticularField(task.id,
+                                updateETTitle.text.toString().trim(),
+                                updateETdesc.text.toString().trim(),)
+                            .observe(this) {
+                                when (it.status) {
+                                    Status.LOADING -> {
+                                        loadingDialog.show()
+                                    }
+
+                                    Status.SUCCESS -> {
+                                        loadingDialog.dismiss()
+                                        if (it.data?.toInt() != -1) {
+                                            longToastShow("Task Updated Successfully")
+                                        }
+                                    }
+
+                                    Status.ERROR -> {
+                                        loadingDialog.dismiss()
+                                        it.message?.let { it1 -> longToastShow(it1) }
+
+                                    }
+                                }
+
+                            }
+                    }
+                }
+                updateTaskDialog.show()
+            }
+        }
+
+
+        mainBinding.taskRV.adapter = taskRecyclerViewAdapter
+
+        callGetTaskList(taskRecyclerViewAdapter)
 
     }
 
-    private fun callGetTaskList() {
+    private fun callGetTaskList(taskRecyclerViewAdapter: TaskRVVBListAdapter) {
         CoroutineScope(Dispatchers.Main).launch {
             taskViewModel.viewTaskList().collect {
                 when (it.status) {
@@ -223,7 +262,7 @@ class MainActivity : AppCompatActivity() {
 //                        it.data?.collect { taskList ->
 //                            taskRecyclerViewAdapter.submitList(taskList)
 //                        }
-                        it.data?.collect { taskList->
+                        it.data?.collect { taskList ->
                             loadingDialog.dismiss()
                             taskRecyclerViewAdapter.addAllTask(taskList)
                         }
