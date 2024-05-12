@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">To-Do</string>
     <string name="welcome_back">Welcome Back!</string>
-    <string name="today_s_tasks">Today\'s Tasks</string>
+    <string name="today_s_tasks">Upcoming Tasks</string>
     <string name="new_task">New Task</string>
+    <string name="enter_search_title">Search Title</string>
 </resources>

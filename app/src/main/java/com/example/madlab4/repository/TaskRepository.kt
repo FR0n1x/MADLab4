@@ -27,6 +27,20 @@ class TaskRepository(application: Application) {
 
     }
 
+//    fun searchTaskList(query: String) = {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            emit(Loading())
+//            try {
+//                val result = taskDao.getTaskList()
+//                emit(Success(result))
+//            } catch (e: Exception) {
+//                emit(Error(e.message.toString()))
+//            }
+//        }
+//
+//
+//    }
+
     fun insertTask(task: Task) = MutableLiveData<Resource<Long>>().apply {
         postValue(Loading())
         try {
@@ -38,6 +52,7 @@ class TaskRepository(application: Application) {
             postValue(Error(e.message.toString()))
         }
     }
+
     fun deleteTask(taskId: String) = MutableLiveData<Resource<Int>>().apply {
         postValue(Loading())
         try {
@@ -61,16 +76,18 @@ class TaskRepository(application: Application) {
             postValue(Error(e.message.toString()))
         }
     }
-    fun updateTaskParticularField(taskId: String, title: String, description: String) = MutableLiveData<Resource<Int>>().apply {
-        postValue(Loading())
-        try {
-            CoroutineScope(Dispatchers.IO).launch {
-                val result = taskDao.updateTaskParticularField(taskId, title, description)
-                postValue(Success(result))
+
+    fun updateTaskParticularField(taskId: String, title: String, description: String) =
+        MutableLiveData<Resource<Int>>().apply {
+            postValue(Loading())
+            try {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val result = taskDao.updateTaskParticularField(taskId, title, description)
+                    postValue(Success(result))
+                }
+            } catch (e: Exception) {
+                postValue(Error(e.message.toString()))
             }
-        } catch (e: Exception) {
-            postValue(Error(e.message.toString()))
         }
-    }
 
 }
